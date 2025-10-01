@@ -27,6 +27,8 @@ class UserViewSetPrivate(viewsets.ModelViewSet):
 class RegisterUserViewSet(viewsets.ModelViewSet):
     queryset=User.objects.none()
     serializer_class = RegisterUserSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [] 
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
