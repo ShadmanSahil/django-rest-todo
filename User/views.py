@@ -6,11 +6,15 @@ from rest_framework import viewsets, status
 from User.userserializers import UserSerializer, RegisterUserSerializer
 from User.models import User
 from firebase_admin import auth
+from rest_framework.permissions import AllowAny
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
+    # public endpoint /users/
+    permission_classes = [AllowAny]
+    authentication_classes = []
 
 class RegisterUserViewSet(viewsets.ModelViewSet):
     queryset=User.objects.none()
