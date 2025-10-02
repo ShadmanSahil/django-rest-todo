@@ -6,7 +6,13 @@ from rest_framework import viewsets
 from TodoList.listserializers import ListSerializer
 from TodoList.models import TodoList
 from TodoItem.models import TodoItem
+from rest_framework.permissions import IsAuthenticated
+
 
 class ListViewSet(viewsets.ModelViewSet):
-    queryset = TodoList.objects.prefetch_related("items").all()
     serializer_class = ListSerializer
+    permission_class = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return TodoList.objects.prefetch_related("items").filter(owner=user)
