@@ -12,7 +12,10 @@ from rest_framework.permissions import IsAuthenticated
 class ListViewSet(viewsets.ModelViewSet):
     serializer_class = ListSerializer
     permission_class = [IsAuthenticated]
-
+    
     def get_queryset(self):
         user = self.request.user
-        return TodoList.objects.prefetch_related("items").filter(owner=user)
+        if user.is_staff==True:
+            return TodoList.objects.prefetch_related("items").all()
+        else:
+            return TodoList.objects.prefetch_related("items").filter(owner=user)
