@@ -15,4 +15,7 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return TodoItem.objects.prefetch_related("items").filter(assignee=user)
+        if user.is_staff==True:
+            return TodoItem.objects.all()
+        else:
+            return TodoItem.objects.filter(assignee=user)
