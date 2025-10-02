@@ -9,7 +9,7 @@ It demonstrates:
 - RESTful API endpoints
 - Authentication & authorization (with Firebase JWTs)
 - Role-based access control (admin vs user)
-- API documentation & testing (Postman pre-request scripts)
+- API documentation _(currently under works)_
 
 
 
