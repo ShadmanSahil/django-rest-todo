@@ -65,6 +65,7 @@ class RegisterUserViewSet(viewsets.ModelViewSet):
         user = User.objects.create(
             firebase_uid=fb_user.uid,
             email=email,
+            username=email, #AbstractUser requires username
             first_name=first_name,
             last_name=last_name,
             phone=phone,
