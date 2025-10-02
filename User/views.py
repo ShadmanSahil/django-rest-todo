@@ -74,3 +74,56 @@ class RegisterUserViewSet(viewsets.ModelViewSet):
         )
 
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+    
+
+class RegisterAdminViewSet(viewsets.ModelViewSet):
+    queryset=User.objects.none()
+    serializer_class = RegisterUserSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [] 
+    http_method_names = ["post"]
+
+    def create(self, request, *args, **kwargs):
+        #validation
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        password = serializer.validated_data["password"]
+        first_name = serializer.validated_data.get("first_name", "")
+        last_name = serializer.validated_data.get("last_name", "")
+        phone = serializer.validated_data.get("phone", "")
+
+        #create in firebase
+        try:
+            fb_user = auth.create_user(
+                email=email,
+                password=password,
+                display_name=f"{first_name} {last_name}".strip() or None,
+                phone_number=phone or None,
+            )
+        except auth.EmailAlreadyExistsError:
+            return Response(
+                {"detail": "A user with this email already exists in Firebase."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return Response(
+                {"detail": f"Firebase error: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        #create in local db
+        user = User.objects.create(
+            firebase_uid=fb_user.uid,
+            email=email,
+            username=email, #AbstractUser requires username
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+            user_type="ADMIN",
+            is_active=True,
+            is_staff=True
+        )
+
+        return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
