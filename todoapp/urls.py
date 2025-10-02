@@ -17,16 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from User.views import RegisterUserViewSet
 from TodoList.views import ListViewSet
 from TodoItem.views import ItemViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
-from User.views import UserViewSetPrivate, UserViewSetPublic
+from User.views import UserViewSetPrivate, UserViewSetPublic, RegisterAdminViewSet, RegisterUserViewSet
 
 
 router = DefaultRouter()
 # router.register(r'users', UserViewSet, basename='user')
 router.register(r'register-users', RegisterUserViewSet, basename='register-user')
+router.register(r'register-admins', RegisterAdminViewSet, basename='register-admin')
 router.register(r'list', ListViewSet, basename='list')
 router.register(r'item', ItemViewSet, basename='item')
 
