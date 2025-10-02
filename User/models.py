@@ -1,13 +1,29 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
-    id = models.BigAutoField(primary_key=True) # change to UUID
-    email = models.EmailField(max_length=100, unique=True)
+class User(AbstractUser):
+
+    """
+    AbstractUser class comes with: 
+
+    username, 
+    first_name, 
+    last_name, 
+    email, 
+    is_active, 
+    is_staff,
+    is_superuser, 
+    date_joined, 
+    last_login, 
+    groups, 
+    user_permissions
+
+    """
+
+    id = models.BigAutoField(primary_key=True) # needs to be changed to UUID
+    firebase_uid = models.CharField(max_length=128, unique=True)
     phone = models.CharField(max_length=100, blank=True, default='')
-    first_name = models.CharField(max_length=100, blank=True, default='')
-    last_name = models.CharField(max_length=100, blank=True, default='')
     birthday = models.DateField(blank=True, null=True)
-    is_active = models.BooleanField(default=True)
 
     USER_TYPE_CHOICES = (
         ('ADMIN', "Admin"),
@@ -21,8 +37,6 @@ class User(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified = models.DateTimeField(auto_now=True)
-
-    firebase_uid = models.CharField(max_length=128, unique=True)
 
     class Meta:
         ordering = ['id']
