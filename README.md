@@ -9,7 +9,7 @@ It demonstrates:
 - RESTful API endpoints
 - Authentication & authorization (with Firebase JWTs)
 - Role-based access control (admin vs user)
-- API documentation _(currently under works)_
+- API documentation (with Postman)
 
 
 
@@ -136,8 +136,7 @@ Authorization: Bearer {{AUTH_TOKEN}}
 - `PUT /item/<id>/` → Update item  
 - `DELETE /item/<id>/` → Delete item
 
-🚧 A complete **Postman collection** is under works and will be provided shortly.
-
+📬 A ready-to-use **Postman collection** is included in the `postman/` directory.
 
 
 ## 🛠 Tech Stack
