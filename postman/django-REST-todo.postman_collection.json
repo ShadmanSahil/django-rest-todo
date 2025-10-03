@@ -1,0 +1,574 @@
+{
+	"info": {
+		"_postman_id": "6f938759-5417-4904-9133-119a2d9ad23e",
+		"name": "Django REST Todo (Firebase Auth)",
+		"description": "Postman collection for a Django REST API with Firebase Authentication.\n\n## Variables to set (Collection or Environment)\n\n- `API_BASE` (e.g., [http://127.0.0.1:8000](http://127.0.0.1:8000))\n    \n- `API_KEY` (Firebase Web API key)\n    \n- `AUTH_EMAIL` (Firebase auth user email)\n    \n- `AUTH_PASSWORD` (Firebase auth user password)\n    \n- `AUTH_TOKEN` (auto-filled by pre-request script)\n    \n\nProtected requests include header: `Authorization: Bearer {{AUTH_TOKEN}}`.\n\nPre-request script signs in to Firebase to fetch an ID token automatically when needed.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12465033"
+	},
+	"item": [
+		{
+			"name": "Auth & Registration",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Passw0rd!\",\n  \"first_name\": \"New\",\n  \"last_name\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{API_BASE}}/register-users/",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"register-users",
+								""
+							]
+						},
+						"description": "Registers a normal user in Firebase and local DB."
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Passw0rd!\",\n  \"first_name\": \"Admin\",\n  \"last_name\": \"User\"\n}"
+						},
+						"url": {
+							"raw": "{{API_BASE}}/register-admins/",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"register-admins",
+								""
+							]
+						},
+						"description": "Registers an admin user (`is_staff=True`)."
+					},
+					"response": []
+				}
+			],
+			"description": "Both endpoints:\n\n- Are Public - anyone can access them\n    \n- Accepts only POST request."
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users (Public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_BASE}}/users/",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						},
+						"description": "Public endpoint that lists users (without todos)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID (Public)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_BASE}}/users/1/",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"users",
+								"1",
+								""
+							]
+						},
+						"description": "Private endpoint; only owner or admin can view full details."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TodoLists",
+			"item": [
+				{
+					"name": "List My TodoLists (Admin sees all)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_BASE}}/list",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create TodoList",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"My First List\",\n  \"description\": \"Things to learn this week\"\n}"
+						},
+						"url": {
+							"raw": "{{API_BASE}}/list",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"list"
+							]
+						},
+						"description": "Owner is automatically set to the authenticated user."
+					},
+					"response": []
+				},
+				{
+					"name": "Update TodoList",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated List Title\",\n  \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{API_BASE}}/list/1",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"list",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete TodoList (Admin can delete any)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_BASE}}/list/1",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"list",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Admin can perform CRUD operations on any lists.\n\nAuthenticated user can only perform CRUD operations on their own lists."
+		},
+		{
+			"name": "TodoItems",
+			"item": [
+				{
+					"name": "List My TodoItems (Admin sees all)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_BASE}}/item",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create TodoItem",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Read DRF docs\",\n  \"description\": \"Study serializers and viewsets\",\n  \"list\": 1,\n  \"assignee\": 1\n}"
+						},
+						"url": {
+							"raw": "{{API_BASE}}/item",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"item"
+							]
+						},
+						"description": "Create an item in a list you own; can assign to another user."
+					},
+					"response": []
+				},
+				{
+					"name": "Update TodoItem",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Read DRF docs (updated)\",\n  \"description\": \"Also check permissions\",\n  \"assignee\": 2\n}"
+						},
+						"url": {
+							"raw": "{{API_BASE}}/item/1",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"item",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete TodoItem",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 2xx', function () {",
+									"  pm.expect(pm.response.code).to.be.within(200, 299);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{AUTH_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{API_BASE}}/item/1",
+							"host": [
+								"{{API_BASE}}"
+							],
+							"path": [
+								"item",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Admin can perform CRUD operations on any todo items.\n\nAuthenticated users can only perform CRUD operations on items they have been assigned."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Fetch Firebase ID token if missing or expired",
+					"if (!pm.variables.get('AUTH_TOKEN')) {",
+					"  const postRequest = {",
+					"    url: 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + pm.variables.get('API_KEY'),",
+					"    method: 'POST',",
+					"    header: { 'Content-Type': 'application/json' },",
+					"    body: {",
+					"      mode: 'raw',",
+					"      raw: JSON.stringify({",
+					"        email: pm.variables.get('AUTH_EMAIL'),",
+					"        password: pm.variables.get('AUTH_PASSWORD'),",
+					"        returnSecureToken: true",
+					"      })",
+					"    }",
+					"  };",
+					"  pm.sendRequest(postRequest, (err, res) => {",
+					"    if (err) {",
+					"      console.log('Firebase auth error:', err);",
+					"      return;",
+					"    }",
+					"    try {",
+					"      const json = res.json();",
+					"      if (json && json.idToken) {",
+					"        pm.variables.set('AUTH_TOKEN', json.idToken);",
+					"      }",
+					"    } catch (e) {",
+					"      console.log('Failed to parse Firebase response:', e);",
+					"    }",
+					"  });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_BASE",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "API_KEY",
+			"value": "YOUR_WEB_API_KEY"
+		},
+		{
+			"key": "AUTH_EMAIL",
+			"value": "test@example.com"
+		},
+		{
+			"key": "AUTH_PASSWORD",
+			"value": "password123"
+		},
+		{
+			"key": "AUTH_TOKEN",
+			"value": ""
+		}
+	]
+}
