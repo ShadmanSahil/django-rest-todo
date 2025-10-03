@@ -17,20 +17,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from User.views import UserViewSet
 from TodoList.views import ListViewSet
 from TodoItem.views import ItemViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from User.views import UserViewSetPrivate, UserViewSetPublic, RegisterAdminViewSet, RegisterUserViewSet
 
 
 router = DefaultRouter()
-router.register(r'users', UserViewSet, basename='user')
+# router.register(r'users', UserViewSet, basename='user')
+router.register(r'register-users', RegisterUserViewSet, basename='register-user')
+router.register(r'register-admins', RegisterAdminViewSet, basename='register-admin')
 router.register(r'list', ListViewSet, basename='list')
 router.register(r'item', ItemViewSet, basename='item')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('users/', UserViewSetPublic.as_view({'get': 'list'}), name='users-list'),
+    path('users/<int:pk>/', UserViewSetPrivate.as_view({'get': 'retrieve'}), name='users-detail'),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # Optional UI:
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
